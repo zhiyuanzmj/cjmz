@@ -1,36 +1,32 @@
  localStorage.setItem('begin',`
-/*var ws=new WebSocket('wss://zmj.ejdcloud.cn/wss');
-ws.onmessage=(msg)=>{
-	console.log(msg.data);
-	var obj=JSON.parse(msg.data);
-	if(obj.status){
-		receiptrecordone_nextnode();
+var lock=false
+function ws_fun(){
+	window.ws=new WebSocket('wss://speech.zmj2.com/wss');
+	window.ws.onmessage=(msg)=>{
+		console.log(msg.data);
+		eval(msg.data);
 	}
-	if(obj.choice){
-		window.count=obj.choice;
+	window.ws.onclose=function(){
+		if(lock) return
+		lock=true
+		setTimeout(function(){
+			console.log('断线重连')
+			ws_fun()
+			lock=false
+    	},5000)
 	}
-	$('#suetel').val(obj.base);
-	suetel();
-}*/
+}
+ws_fun()
 window.onfocus=()=>{
 	$('#suetel').focus()
 }
 function openHome(){
 	var mainWindow=window.open('http://10.169.1.13/rrs/frame.html?st=framepage','zmj1');
 	var zmj=setInterval(()=>{
-      if(mainWindow.framemain.document.title === '报修工单登录列表页') {
+      if(mainWindow.framemain&&mainWindow.framemain.document.title === '报修工单登录列表页') {
     	clearInterval(zmj);
-		mainWindow.onbeforeunload=function(e){     
-　　        return "不要再刷新了,我的代码会被刷新掉"
-        }
-        mainWindow.document.title='RRS 驱动成功 ! ! !'
-		mainWindow.fn=()=>{	
-			var fuhe_list=$(mainWindow.framemain.document).find('font:contains("复核中")').parents('td');
-			fuhe_list.map(function(){
-				this.click()
-			});
-		}
-		mainWindow.speech=function(){
+		var speech=window.speech=function(){	
+			mainWindow.document.title='RRS 驱动成功 ! ! !'
 			if(mainWindow.framemain.document.readyState!=='complete'){return false}
 			var test=arguments[0]||'分配中'
 			var speech=new SpeechSynthesisUtterance()
@@ -51,7 +47,7 @@ function openHome(){
 				}
 			}
 		}
-		mainWindow.speech2=function(){
+		var speech2=window.speech2=function(){
 			var fp_list=[].slice.apply($(mainWindow.framemain.document).find('font:contains("分配中")').parents('tr'));
 			var fp_exclude=eval(localStorage.getItem('fp_exclude'))||[]
 			for(var fp of fp_list){
@@ -65,48 +61,68 @@ function openHome(){
 				}
 			}
 		}
-		function start(){
+		var start=window.start=function(){
 			mainWindow.framemain.updateOneRR=(rrid_rd)=>{
-			  		var updateWindow=mainWindow.framemain.open("/rrs/receiptrecordLogin.html?st=rr_onebyrrid_update_page&gp=rr_onebyrrid_update_page&rrid_rd="+rrid_rd+"&rr_data_source=database&functionid=6387D46921F8E937","_blank")
-			 		updateWindow.onkeydown=(event)=>{
-			 			if(event.which===13){
-			 				updateWindow.receiptrecordone_nextnode()
-				 			//$(updateWindow.document).find('.buttongreen').click()
-				 		}
-				 	}
-				}
-				mainWindow.fn();
+		  		var updateWindow=mainWindow.framemain.open("/rrs/receiptrecordLogin.html?st=rr_onebyrrid_update_page&gp=rr_onebyrrid_update_page&rrid_rd="+rrid_rd+"&rr_data_source=database&functionid=6387D46921F8E937","_blank")
+		 		updateWindow.onkeydown=(event)=>{
+		 			if(event.which===13){
+		 				updateWindow.confirm=()=>true
+		 				updateWindow.receiptrecordone_nextnode()
+			 		}
+			 	}
+			}
+			var fuhe_list=$(mainWindow.framemain.document).find('font:contains("复核中")').parents('td');
+			fuhe_list.map(function(){
+				this.click()
+			});
 		}
-		var result=mainWindow.speech()
-		window.interval&&clearInterval(window.interval)
-		window.interval=setInterval(()=>{
-			result=mainWindow.speech&&mainWindow.speech()
-		},20*1000)
-		window.reload&&clearInterval(window.reload)
-		window.reload=setInterval(()=>{
-			mainWindow.framemain&&mainWindow.framemain.location.reload()
-			mainWindow.framemain.onkeydown=a
-			mainWindow.framemaintop.onkeydown=a
-			mainWindow.mainframeleft.onkeydown=a	
-			mainWindow.onkeydown=a
-		},15*1000)
 		var a=(event)=>{
 			if(event.which===106){
-				start()
-			}else if(event.which===96){
-				result()
+				window.start()
+			}else if(event.key=='0'){
+				window.result()
 			}else if(event.which===116){
-				mainWindow.framemain.location.reload()
+				mainWindow.mainframeleft&&$(mainWindow.mainframeleft.document).find('a:contains("保障部处理页")')[0].click()
 				return false
-			}else if(event.which===110){
-				mainWindow.speech2()
+			}else if(event.key=='Enter'){
+				window.speech2()
+			}else if(event.key=='1'){
+				ws.send('fun("1")')
+			}else if(event.key=='2'){
+				ws.send('fun("2")')
+			}else if(event.key=='3'){
+				ws.send('fun("3")')
+			}else if(event.key=='4'){
+				ws.send('fun("4")')
+			}else if(event.key=='5'){
+				ws.send('fun("5")')
+			}else if(event.key=='6'){
+				ws.send('fun("6")')
 			}
 		}
+		window.result=window.speech()
+		window.reload&&clearInterval(window.reload)
+		window.fun_1=function(abc){
+			mainWindow.mainframeleft&&$(mainWindow.mainframeleft.document).find('a:contains("保障部处理页")')[0].click()
+			window.interval&&clearInterval(window.interval)
+			window.interval=setInterval(()=>{
+          		if(mainWindow.framemain.document.title === '报修工单登录列表页') {
+					clearInterval(window.interval)
+					window.result=window.speech()
+					mainWindow.framemain.onkeydown=a
+					if(abc){
+						window.start()
+					}
+		    	}
+			},1000)
+		}
+		window.reload=setInterval(window.fun_1,30*1000)
 		mainWindow.framemain.onkeydown=a
 		mainWindow.framemaintop.onkeydown=a
-		mainWindow.mainframeleft.onkeydown=a	
+		mainWindow.mainframeleft.onkeydown=a
 		mainWindow.onkeydown=a
-		start()
+		fun_1(1)
+		//start()
 	  }  
 	},100);
 }
@@ -292,7 +308,7 @@ var suetel=()=>{
 			system=['12','离港|T1|CUTE'];
 			t='|T1';
 			switch(num[2]){
-                case '0':dao="K";console.log(typeof num[4]);if(num[3]==='01'&&num[4]==='0'){window.count=5;num[4]='5'}break;
+                case '0':dao="K";if(num[3]==='01'&&num[4]==='0'){window.count=5;num[4]='5'}break;
                 case '1':dao="L";break;
                 case '2':
                 	switch(num[3]){
@@ -464,7 +480,7 @@ var suetel=()=>{
 	$('#deptadminid').val('101071400000000');
 	$('#deptonchargeid').val('101071400000000');
 	updateTime();
-	window.receiptrecordone_nextnode=()=>{
+	window.receiptrecordone_nextnode=function(){
 			if(checkallinputlength()==false){
 				return false;
 			}
@@ -475,7 +491,8 @@ var suetel=()=>{
 				alert('不要发下去空的报修啊 老铁 你这不是坑我吗.....');
 				return false;
 			}
-	        if(confirm('您确认【提交】本记录吗？\\n提交后本记录将流向下一节点 【基层科室处理中】 \\n如果您是基层科室，想将报修转至系统管理员处理或进行遗留处理\\n请点击【取消】，在【报修状态栏】进行相应选择后再次提交')) {
+			var val=arguments[0]||confirm('您确认【提交】本记录吗？\\n提交后本记录将流向下一节点 【基层科室处理中】 \\n如果您是基层科室，想将报修转至系统管理员处理或进行遗留处理\\n请点击【取消】，在【报修状态栏】进行相应选择后再次提交')
+	        if(val) {
 	            setPeriodtime();
 	            $("#rrscontent").mask("加载中...");
 	            document.getElementById("st").value = "rr_onebyrrid_insert_save";
@@ -507,6 +524,7 @@ var suetel=()=>{
 								localStorage.setItem('9',eval(localStorage.getItem('9')||0)+1);
 							}
 					    	openHome()
+					    	ws.send('rel()')
 					    	$("#rrscontent").unmask();
 					    }else{
 					    	alert("恭喜你服务器大姨妈了 没提交上去 再来一遍吧");
@@ -527,11 +545,12 @@ var suetel=()=>{
 	        }
     }
 }
-$('#suetel').bind('input',suetel).next().remove();
-$('#suetel').after('<span style="color:green" title="修改了几个漏洞 建议使用F5刷新 否则我的代码将被清空 \\n每隔15秒读第一个分配中报修 可以按0取消此条报修的播报 \\n并且这辈子都不会再报了 然后开始读第二个分配中报修\\n如果服务器出现500报错自动刷新">超级瞄准已部署(V.201801031)</span>');
+$('#suetel').bind('input',suetel).nextAll().remove();
+$('#suetel').after('<span style="color:green" title="修改了几个漏洞 建议使用F5刷新 否则我的代码将被清空 \\n每隔30秒读第一个分配中报修 可以按0取消此条报修的播报 \\n并且这辈子都不会再报了 然后开始读第二个分配中报修\\n如果服务器出现500报错自动刷新">超级瞄准已部署(V.201801031)</span>');
 setTimeout(()=>{
 	window.name='zmj';
 	document.title="超级瞄准 ING！！!";
 })
+openHome()
 `);
 eval(localStorage.getItem('begin')); 

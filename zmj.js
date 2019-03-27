@@ -23,27 +23,27 @@ var zmj=setInterval(function(){
     	//BEGIN
     	var speech=window.speech=new SpeechSynthesisUtterance()
 		speech.rate=0.5
-    	window.fun=function(zmj,text,chao_shi){
-    	    window.arr={
+		window.arr={
 				c1:['3272A90A3EC4FFFCE3655B272BE330E460A74D9AE78EB958','姚宇'],
 				c2:['3272A90A3EC4FFFCE3655B272BE330E4BBCEE5F9717E822D','徐文清'],
 				c3:['3272A90A3EC4FFFCE3655B272BE330E4BAA7A306B41AEEF9','高飞'],
-				c4:['8B3A67C84139A2EF9756B2C1B16A24A3257C63C0019271C9','奚陈刚'],
-				c5:['8B3A67C84139A2EFDE09F88B0A533E67D1D69089EDEC444E','施临'],
+				c4:['8B3A67C84139A2EFDE09F88B0A533E67D1D69089EDEC444E','奚陈刚'],
+				c5:['8B3A67C84139A2EF9756B2C1B16A24A3257C63C0019271C9','施临'],
 				c6:['62DAE2C317CCEAD7E3655B272BE330E493172BF54C1EBC4D','浦敏'],
 				a1:['3272A90A3EC4FFFCE3655B272BE330E416997613E676D594','宋伟杰'],
 				a2:['3272A90A3EC4FFFCE3655B272BE330E482B0CFC6F70599D6','董启彪'],
 				a3:['3272A90A3EC4FFFCE3655B272BE330E450A513DE0C3E2401','张剑涛'],
-				a4:['8B3A67C84139A2EFDE09F88B0A533E67899D6ED26D8EE6FF','许巍'],
-				a5:['8B3A67C84139A2EFDE09F88B0A533E671B98F367E702D509','王哥'],
+				a4:['8B3A67C84139A2EFDE09F88B0A533E671B98F367E702D509','许巍'],
+				a5:['8B3A67C84139A2EFDE09F88B0A533E67899D6ED26D8EE6FF','王哥'],
 				a6:['62DAE2C317CCEAD7E3655B272BE330E493172BF54C1EBC4D','浦敏'],
-				b1:['3272A90A3EC4FFFCE3655B272BE330E436F5C7AB060D9A98','T1班长'],
-				b2:['3272A90A3EC4FFFCE3655B272BE330E4B38DEFBD0E4EAE4F','T2班长'],
+				b1:['3272A90A3EC4FFFCE3655B272BE330E436F5C7AB060D9A98','刘金飞'],
+				b2:['3272A90A3EC4FFFCE3655B272BE330E4B38DEFBD0E4EAE4F','戴荣婷'],
 				b3:['3272A90A3EC4FFFCE3655B272BE330E471A0F86ABDB179AA','秋风'],
-				b4:['8B3A67C84139A2EFDE09F88B0A533E6729665BE1620B35FF','老吴'],
-				b5:['8B3A67C84139A2EF9756B2C1B16A24A3F8D9C1F6DA60D0EF','陈主任'],
+				b4:['8B3A67C84139A2EF9756B2C1B16A24A3F8D9C1F6DA60D0EF','陈主任'],
+				b5:['8B3A67C84139A2EFDE09F88B0A533E6729665BE1620B35FF','老吴'],
 				b6:['62DAE2C317CCEAD7E3655B272BE330E493172BF54C1EBC4D','浦敏'],
 		    }
+    	window.fun=function(zmj,text,chao_shi){
 		    var core=function(){
 			  	if(text){
 			  		chao_shi=framemain.document.querySelector('.noOrder')
@@ -70,36 +70,40 @@ var zmj=setInterval(function(){
 	         rel(core)
 	       }
     	}
-    	var spe=function(){
+    	var spe=function(val1){
 			document.title='自动分配驱动成功 ! ! !'
 			//var tocs=[].slice.apply(framemain.document.getElementsByClassName('.noOrder'))
 			var toc=framemain.document.querySelector('.noOrder')
 			if(toc){
 				var isToc=toc.getElementsByTagName('font')[0].getAttribute('color')=='#ff7777'
 				var match=toc.children[4].textContent.match(/\\|(T1|T2)$/)&&toc.children[4].textContent.match(/\\|(T1|T2)$/)[1]
-				var isT1=toc.children[3].textContent.match(/\\/(\d{3})\d/)&&toc.children[3].textContent.match(/\\/(\d{3})\d/)[1]=='171'
+				var isT1=toc.children[3].textContent.match(/\\/(\\d{3})\\d/)&&toc.children[3].textContent.match(/\\/(\\d{3})\\d/)[1]=='171'
 				console.log(1)
 				if(match=='T1'&&!isToc||isT1){
-					var text='自动派单,'+toc.children[3].textContent.match(/\\d+/)[0].split('').join(' ')+','+window.arr[window.ban+zmj][1]
-					console.log(text,'草拟吗')
+					var text='自动派单,'+toc.children[3].textContent.match(/\\d+/)[0].split('').join(' ')+','+window.arr[window.ban+1][1]
+					console.log(text)
 					fun('1',text,toc)
 				}else if(match=='T2'&&!isToc){
-					var text='自动派单,'+toc.children[3].textContent.match(/\\d+/)[0].split('').join(' ')+","+window.arr[window.ban+zmj][1]
-					console.log(text,'草拟吗')
+					var text='自动派单,'+toc.children[3].textContent.match(/\\d+/)[0].split('').join(' ')+","+window.arr[window.ban+2][1]
+					console.log(text)
 					fun('2',text,toc)
 				}else{
 					var fp_exclude=eval(localStorage.getItem('fp_exclude'))||[]
 					var id=toc.getElementsByTagName('strong')[0].innerText
 					if(!fp_exclude.includes(id)){
-						speech.text='超时报修,'+toc.children[3].textContent.match(/\\d+/)[0].split('').join(' ')
-						speechSynthesis.speak(speech)
-						fp_exclude.push(id)
-						localStorage.setItem('fp_exclude',JSON.stringify(fp_exclude))
+						if(typeof val1=='undefined'){
+							rel(0,1)
+						}else{
+							speech.text='超时报修,'+toc.children[3].textContent.match(/\\d+/)[0].split('').join(' ')
+							speechSynthesis.speak(speech)
+							fp_exclude.push(id)
+							localStorage.setItem('fp_exclude',JSON.stringify(fp_exclude))
+					    }
 					}
 				}
 			}
 		}
-		window.rel=(zmj1)=>{
+		window.rel=(zmj1,val2)=>{
 			mainframeleft&&$(mainframeleft.document).find('a:contains("基层科室处理页")')[0].click()
 			var result=parseInt((new Date()-new Date(2018,10,18,08,45))/(1000*60*60*24))%3
 			if(new Date().getHours()>22||new Date().getHours()<8){
@@ -137,7 +141,7 @@ var zmj=setInterval(function(){
 					    if(zmj1){
 					    	zmj1()
 					    }else{
-					    	spe()
+					    	spe(val2)
 					    }
 					},1000)
 		    	}

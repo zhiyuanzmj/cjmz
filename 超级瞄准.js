@@ -1,4 +1,4 @@
- localStorage.setItem('begin',`
+localStorage.setItem('begin',`
 var lock=false
 function ws_fun(){
 	window.ws=new WebSocket('wss://speech.zmj2.com/wss');
@@ -21,114 +21,139 @@ window.onfocus=()=>{
 	$('#suetel').focus()
 }
 function openHome(){
-	var mainWindow=window.open('http://10.169.1.13/rrs/frame.html?st=framepage','zmj1');
+	if(!window.mainWindow){
+		window.mainWindow=window.open('http://10.169.1.13/rrs/frame.html?st=framepage','zmj1');
+	}
 	var zmj=setInterval(()=>{
-      if(mainWindow.framemain&&mainWindow.framemain.document.title === '报修工单登录列表页') {
-    	clearInterval(zmj);
-		var speech=window.speech=function(){	
-			mainWindow.document.title='RRS 驱动成功 ! ! !'
-			if(mainWindow.framemain.document.readyState!=='complete'){return false}
-			var test=arguments[0]||'分配中'
-			var speech=new SpeechSynthesisUtterance()
-			speech.rate=arguments[1]||0.5
-			var fp_list=[].slice.apply($(mainWindow.framemain.document).find('font:contains("'+test+'")').parents('tr'));
-			var fp_exclude=eval(localStorage.getItem('fp_exclude'))||[]
-			for(var fp of fp_list){
-				var id=fp.childNodes[3].getElementsByTagName('strong')[0].innerText
-				var text=fp.childNodes[17].data.replace(/<.*?>/g,'')
-				if(!fp_exclude.includes(id)){
-					speech.text=text
-					speechSynthesis.speak(speech)
-					return function(){
+      if(mainWindow.framemain&&mainWindow.framemain.document.readyState=='complete') {
+    	    clearInterval(zmj);
+		    localStorage.setItem('open_home',\`
+			  window.speech=function(){	
+				document.title='RRS 驱动成功 ! ! !'
+				var test=arguments[0]||'分配中'
+				var speech=new SpeechSynthesisUtterance()
+				speech.rate=arguments[1]||0.5
+				var fp_list=[].slice.apply($(framemain.document).find('font:contains("'+test+'")').parents('tr'));
+				var fp_exclude=eval(localStorage.getItem('fp_exclude'))||[]
+				for(var fp of fp_list){
+					var id=fp.childNodes[3].getElementsByTagName('strong')[0].innerText
+					var text=fp.childNodes[17].data.replace(/<.*?>/g,'')
+					if(!fp_exclude.includes(id)){
+						speech.text=text
+						speechSynthesis.speak(speech)
+						return function(){
+							speechSynthesis.cancel()
+							fp_exclude.push(id)
+							localStorage.setItem('fp_exclude',JSON.stringify(fp_exclude))
+						}
+					}
+				}
+			}
+			window.speech2=function(){
+				var fp_list=[].slice.apply($(framemain.document).find('font:contains("分配中")').parents('tr'));
+				var fp_exclude=eval(localStorage.getItem('fp_exclude'))||[]
+				for(var fp of fp_list){
+					var id=fp.childNodes[3].getElementsByTagName('strong')[0].innerText
+					var text=fp.childNodes[17].data.replace(/<.*?>/g,'')
+					if(!fp_exclude.includes(id)){
 						speechSynthesis.cancel()
 						fp_exclude.push(id)
 						localStorage.setItem('fp_exclude',JSON.stringify(fp_exclude))
+						fp.childNodes[3].click()
 					}
 				}
 			}
-		}
-		var speech2=window.speech2=function(){
-			var fp_list=[].slice.apply($(mainWindow.framemain.document).find('font:contains("分配中")').parents('tr'));
-			var fp_exclude=eval(localStorage.getItem('fp_exclude'))||[]
-			for(var fp of fp_list){
-				var id=fp.childNodes[3].getElementsByTagName('strong')[0].innerText
-				var text=fp.childNodes[17].data.replace(/<.*?>/g,'')
-				if(!fp_exclude.includes(id)){
-					speechSynthesis.cancel()
-					fp_exclude.push(id)
-					localStorage.setItem('fp_exclude',JSON.stringify(fp_exclude))
-					fp.childNodes[3].click()
+			window.start=function(){
+				framemain.updateOneRR=(rrid_rd)=>{
+			  		var updateWindow=framemain.open("/rrs/receiptrecordLogin.html?st=rr_onebyrrid_update_page&gp=rr_onebyrrid_update_page&rrid_rd="+rrid_rd+"&rr_data_source=database&functionid=6387D46921F8E937","_blank")
+			 		updateWindow.onkeydown=(event)=>{
+			 			if(event.which===13){
+			 				updateWindow.confirm=()=>true
+			 				updateWindow.receiptrecordone_nextnode()
+				 		}
+				 	}
+				}
+				var fuhe_list=$(framemain.document).find('font:contains("复核中")').parents('td');
+				fuhe_list.map(function(){
+					this.click()
+				});
+			}
+			window.onunload=()=>{
+				opener.openHome()
+			}
+			window.a=(event)=>{
+				if(event.key=='*'){
+					start()
+				}else if(event.key=='0'){
+					result()
+				}else if(event.which===116){
+					mainframeleft&&$(mainframeleft.document).find('a:contains("保障部处理页")')[0].click()
+					return false
+				}else if(event.key=='Enter'){
+					speech2()
+				}else if(event.key=='1'){
+					opener.ws.send('fun("1")')
+				}else if(event.key=='2'){
+					opener.ws.send('fun("2")')
+				}else if(event.key=='3'){
+					opener.ws.send('fun("3")')
+				}else if(event.key=='4'){
+					opener.ws.send('fun("4")')
+				}else if(event.key=='5'){
+					opener.ws.send('fun("5")')
+				}else if(event.key=='6'){
+					opener.ws.send('fun("6")')
+				}else if(event.key=='.'){
+					opener.focus()
 				}
 			}
-		}
-		var start=window.start=function(){
-			mainWindow.framemain.updateOneRR=(rrid_rd)=>{
-		  		var updateWindow=mainWindow.framemain.open("/rrs/receiptrecordLogin.html?st=rr_onebyrrid_update_page&gp=rr_onebyrrid_update_page&rrid_rd="+rrid_rd+"&rr_data_source=database&functionid=6387D46921F8E937","_blank")
-		 		updateWindow.onkeydown=(event)=>{
-		 			if(event.which===13){
-		 				updateWindow.confirm=()=>true
-		 				updateWindow.receiptrecordone_nextnode()
-			 		}
-			 	}
-			}
-			var fuhe_list=$(mainWindow.framemain.document).find('font:contains("复核中")').parents('td');
-			fuhe_list.map(function(){
-				this.click()
-			});
-		}
-		var a=(event)=>{
-			if(event.which===106){
-				window.start()
-			}else if(event.key=='0'){
-				window.result()
-			}else if(event.which===116){
-				mainWindow.mainframeleft&&$(mainWindow.mainframeleft.document).find('a:contains("保障部处理页")')[0].click()
-				return false
-			}else if(event.key=='Enter'){
-				window.speech2()
-			}else if(event.key=='1'){
-				ws.send('fun("1")')
-			}else if(event.key=='2'){
-				ws.send('fun("2")')
-			}else if(event.key=='3'){
-				ws.send('fun("3")')
-			}else if(event.key=='4'){
-				ws.send('fun("4")')
-			}else if(event.key=='5'){
-				ws.send('fun("5")')
-			}else if(event.key=='6'){
-				ws.send('fun("6")')
-			}
-		}
-		window.result=window.speech()
-		window.reload&&clearInterval(window.reload)
-		window.fun_1=function(abc){
-			mainWindow.mainframeleft&&$(mainWindow.mainframeleft.document).find('a:contains("保障部处理页")')[0].click()
-			window.interval&&clearInterval(window.interval)
-			window.interval=setInterval(()=>{
-          		if(mainWindow.framemain.document.title === '报修工单登录列表页') {
-					clearInterval(window.interval)
-					window.result=window.speech()
-					mainWindow.framemain.onkeydown=a
-					if(abc){
-						window.start()
+			window.result=window.speech()
+			window.reload&&clearInterval(window.reload)
+			window.fun_1=function(abc){
+					if(!abc){
+						mainframeleft&&$(mainframeleft.document).find('a:contains("保障部处理页")').length>0&&$(mainframeleft.document).find('a:contains("保障部处理页")')[0].click()
 					}
-		    	}
-			},1000)
-		}
-		window.reload=setInterval(window.fun_1,30*1000)
-		mainWindow.framemain.onkeydown=a
-		mainWindow.framemaintop.onkeydown=a
-		mainWindow.mainframeleft.onkeydown=a
-		mainWindow.onkeydown=a
-		fun_1(1)
-		//start()
+					window.interval&&clearInterval(window.interval)
+					framemain.document.title=''
+					window.interval=setInterval(()=>{
+	          		  if(framemain&&framemain.document.title === '报修工单登录列表页') {
+	          		  	framemain.voiceOff=()=>{}
+						clearInterval(window.interval)
+						window.result=window.speech()
+						framemain.onkeydown=a
+						if(abc){
+							start()
+					  	}
+			    	  }
+				    },100)
+			}
+			window.reload=setInterval(window.fun_1,30*1000)
+			framemain.onkeydown=a
+			framemaintop.onkeydown=a
+			mainframeleft.onkeydown=a
+			onkeydown=a
+			fun_1(1)
+			window.zmj=window.open('http://10.169.1.13/rrs/receiptrecordLogin.html?st=rr_onebyrrid_insert_page&gp=rr_onebyrrid_insert_page&functionid=6387D46921F8E937','zmj')
+			window.go_parent&&clearInterval(window.go_parent)
+			zmj.document.title='正在开启...'
+			window.go_parent=setInterval(function(){
+				if(zmj&&zmj.document.title=="报修记录新增页"){
+					clearInterval(window.go_parent)
+					zmj.eval(localStorage.getItem('begin'))
+				}
+			},500)
+		  \`)
+		  mainWindow.eval(localStorage.getItem('open_home'))
 	  }  
 	},100);
 }
 document.onkeydown=function(event){
+	if(document.activeElement.nodeName!='INPUT'){
+		$('#suetel').focus()
+	}
 	if(event.keyCode===111){
-		openHome()
+		$('[for="suetel"]').css('display','none')
+		console.log('1111')
 		setTimeout(()=>{
 			init()
 		});
@@ -139,12 +164,17 @@ document.onkeydown=function(event){
 		window.count=(--window.count==-1?9:window.count);
 		$('#suetel').blur();
 		$("#devicepositiondesc_show").blur();
+		$('.ac_results').css('display','none')
 		suetel();
 	}else if(event.keyCode===38){
 		window.count=(++window.count==10?0:window.count);
 		$('#suetel').blur();
 		$("#devicepositiondesc_show").blur();
+		$('.ac_results').css('display','none')
 		suetel();
+	}else if(event.key=='.'){
+		opener.focus()
+		opener.fun_1()
 	}
 }
 $('#devicepositiondesc_show').bind('change',(event)=>{
@@ -204,12 +234,19 @@ window.init=()=>{
 	window.onkey=false;
 }
 var suetel=()=>{
+	//$('.error').length>0&&($('.error')[1].style.display='none')
+	suetel_onkeypresscheck=()=>{}
 	window.count=(typeof window.count=="undefined"?0:window.count);
 	var str=$('#suetel').val();
 	if(str.length==0){
 		init();
+	}else if(/\\./.test(str)){
+		opener.focus()
+		opener.fun_1()
+		$('#suetel').val(str.substr(0,str.length-1))
+		return
 	}
-	var num=str.match(/^(\\d)(\\d)(\\d{2})([\\d\\/\\-+]|\\b)$/)
+	var num=str.match(/^(\\d)(\\d)(\\d{2})([\\d\\/\\-+.]|\\b)$/)
 	,devicearea=[],isin
 	,t='',dao='',rrstatus=[]
 	,system=[]
@@ -226,7 +263,6 @@ var suetel=()=>{
 		num[4]=num[4]==''?window.count.toString():num[4];
 		window.count=parseInt(num[4]);
 	}
-	
 	switch(num[1]){
 		case '1':
 			//安检begin
@@ -241,11 +277,11 @@ var suetel=()=>{
 			//安检end
 			var a=parseInt(num[2]+num[3])
 			,isin=true;
-			if(1<=a&&a<=15){
+			if(1<=a&&a<=14){
 				devicearea=['3','浦东机场|T1'];
 				system=['57','离港|T1|NEWAPP'];
+				t=parseInt(num[3])+'号登机口|T1';
 				num[3]='';
-				t=a+'号登机口|T1';
 			}else if(200<=a&&a<=206){
 				devicearea=['3','浦东机场|T1'];	
 				system=['57','离港|T1|NEWAPP'];
@@ -256,7 +292,7 @@ var suetel=()=>{
 				system=['57','离港|T1|NEWAPP'];
 				num[3]='';
 				t=a+'远机位|T1';
-			}else if(num[2]==1&&16<=num[3]&&num[3]<=29){
+			}else if(num[2]==1&&15<=num[3]&&num[3]<=29){
 				devicearea=['3','浦东机场|T1'];
 				system=['12','离港|T1|CUTE'];
 				t='号登机口|T1';
@@ -359,29 +395,28 @@ var suetel=()=>{
 	switch(num[4]){
 		case '0':
 			if(num[1]==1&&num[2]==7){
-				rrstatus=['1992','门禁|强打'];
+				rrstatus=['8346','门禁|故障'];
 				break;
 			}
 			rrstatus=isin?['1700','BGR|登机牌扫描器|故障']:['3156','OCR|键盘无法刷护照'];
 			break;
 		case '1':
 			if(num[1]==1&&num[2]==7){
-				rrstatus=['3926','门禁|BG'];
+				rrstatus=['1992','门禁|强打'];
 				break;
 			}
 			rrstatus=['1083','ATB|登机牌打印机|无法打印'];
 			break;
 		case '2':
 			if(num[1]==1&&num[2]==7){
-				rrstatus=['64','读卡器故障'];
+				rrstatus=['3926','门禁|BG'];
 				break;
 			}
 			rrstatus=isin?['4243','DCP|文件打印机|无法打印']:['3847','BTP|行李条打印机|无法打印'];
 			break;
 		case '3':
 			if(num[1]==1&&num[2]==7){
-				rrstatus=['723','镜头黑屏'];
-				system=['4','CCTV|视频监控|T1'];
+				rrstatus=['13057','刷卡未使用'];
 				break;
 			}
 			rrstatus=['1469','航显故障'];
@@ -389,8 +424,7 @@ var suetel=()=>{
 			break;
 		case '4':
 			if(num[1]==1&&num[2]==7){
-				rrstatus=['79','镜头模糊'];
-				system=['4','CCTV|视频监控|T1'];
+				rrstatus=['64','读卡器故障'];
 				break;
 			}
 			rrstatus=['40611','内部通讯'];
@@ -398,7 +432,7 @@ var suetel=()=>{
 			break;
 		case '5':
 			if(num[1]==1&&num[2]==7){
-				rrstatus=['3789','破玻故障'];
+				rrstatus=['6182','读卡器闪烁'];
 				break;
 			}
 			rrstatus=isin?['15938','大广播故障']:['4970','CUSS|故障']
@@ -420,21 +454,24 @@ var suetel=()=>{
 			break;
 		case '7':
 			if(num[1]==1&&num[2]==7){
-				rrstatus=['805','门关不上'];
+				rrstatus=['79','镜头模糊'];
+				system=['4','CCTV|视频监控|T1'];
 				break;
 			}
 			rrstatus=['6433','鼠标|故障'];
 			break;
 		case '8':
 			if(num[1]==1&&num[2]==7){
-				rrstatus=['406','门打不开'];
+				rrstatus=['723','镜头黑屏'];
+				system=['4','CCTV|视频监控|T1'];
 				break;
 			}
 			rrstatus=['8227',',PC键盘|故障'];
 			break;
 		case '9':
 			if(num[1]==1&&num[2]==7){
-				rrstatus=['13057','刷卡未使用'];
+				rrstatus=['13079','镜头故障'];
+				system=['4','CCTV|视频监控|T1'];
 				break;
 			}
 			rrstatus=['1091','电脑'];
@@ -443,14 +480,15 @@ var suetel=()=>{
 			if(window.count>0){
 				window.count=0
 					if(num[1]==1&&num[2]==7){
-					rrstatus=['1992','门禁|强打'];
+					rrstatus=['8346','门禁|故障'];
 					break;
 				}
 				rrstatus=isin?['1700','BGR|登机牌扫描器|故障']:['3156','OCR|键盘无法刷护照'];
 			}else{
 				window.count=9;
 				if(num[1]==1&&num[2]==7){
-					rrstatus=['13057','刷卡未使用'];
+					rrstatus=['13079','镜头故障'];
+					system=['4','CCTV|视频监控|T1'];
 					break;
 				}
 				rrstatus=['1091','电脑'];
@@ -494,13 +532,15 @@ var suetel=()=>{
 			var val=arguments[0]||confirm('您确认【提交】本记录吗？\\n提交后本记录将流向下一节点 【基层科室处理中】 \\n如果您是基层科室，想将报修转至系统管理员处理或进行遗留处理\\n请点击【取消】，在【报修状态栏】进行相应选择后再次提交')
 	        if(val) {
 	            setPeriodtime();
-	            $("#rrscontent").mask("加载中...");
+	            $("#rrscontent").mask('如果一直不消失 说明与主列表页面断开连接了 <br/>需要关闭主列表页面 重新部署超级瞄准')
 	            document.getElementById("st").value = "rr_onebyrrid_insert_save";
 	            document.getElementById("gp").value = "receiptrecord_cred_success";
 	            document.getElementById("resultid").value = "30";
 				function state_Change(){
 					if (request.readyState==4){
 					  	if (request.status==200){
+					  		var prev=$('#suetel').val()+' '+$('#rrstatus_show').val()
+							$('#suetel').attr('placeholder',prev)					  	
 					  		init();//初始化
 					    	if(num[4]==0){	//做了一点统计工作
 								localStorage.setItem('1',eval(localStorage.getItem('0')||0)+1);
@@ -523,7 +563,11 @@ var suetel=()=>{
 							}else if(num[4]==9){
 								localStorage.setItem('9',eval(localStorage.getItem('9')||0)+1);
 							}
-					    	openHome()
+					    	if(opener.document.title=='RRS'){
+					    		openHome()
+					    	}else{
+					    		opener.parent.start()
+					    	}
 					    	ws.send('rel()')
 					    	$("#rrscontent").unmask();
 					    }else{
@@ -546,11 +590,14 @@ var suetel=()=>{
     }
 }
 $('#suetel').bind('input',suetel).nextAll().remove();
-$('#suetel').after('<span style="color:green" title="修改了几个漏洞 建议使用F5刷新 否则我的代码将被清空 \\n每隔30秒读第一个分配中报修 可以按0取消此条报修的播报 \\n并且这辈子都不会再报了 然后开始读第二个分配中报修\\n如果服务器出现500报错自动刷新">超级瞄准已部署(V.201801031)</span>');
+$('#suetel').after('<p style="color:green" id="cjmz" title="修改了几个漏洞 建议使用F5刷新 否则我的代码将被清空 \\n每隔30秒读第一个分配中报修 可以按0取消此条报修的播报 \\n并且这辈子都不会再报了 然后开始读第二个分配中报修\\n如果服务器出现500报错自动刷新">超级瞄准已部署(V.2019026)</p>');
 setTimeout(()=>{
 	window.name='zmj';
-	document.title="超级瞄准 ING！！!";
+	document.title="超级瞄准 ING！！！";
 })
-openHome()
+if(!opener||opener.document.title=='RRS'){
+	openHome()
+}
+
 `);
 eval(localStorage.getItem('begin')); 

@@ -1,5 +1,4 @@
-localStorage.setItem('fen_pei',`
-var lock=false
+`var lock=false
 function ws_fun(){
 	window.ws=new WebSocket('wss://speech.zmj2.com/wss');
 	window.ws.onmessage=(msg)=>{
@@ -151,6 +150,4 @@ var zmj=setInterval(function(){
     	window.reload=setInterval(rel,30*1000)
     	//END
    	  }
-   	},100);
-`)
-eval(localStorage.getItem('fen_pei')); 
+   	},100);`

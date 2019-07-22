@@ -1,5 +1,4 @@
-localStorage.setItem('begin',`
-var lock=false
+`var lock=false
 function ws_fun(){
 	window.ws=new WebSocket('wss://speech.zmj2.com/wss');
 	window.ws.onmessage=(msg)=>{
@@ -601,7 +600,4 @@ setTimeout(()=>{
 })
 if(!opener||opener.document.title=='RRS'){
 	openHome()
-}
-
-`);
-eval(localStorage.getItem('begin')); 
+}` 

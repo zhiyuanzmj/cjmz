@@ -189,7 +189,11 @@ $('#rrstatus_show').bind('change',(event)=>{
             system=["804","离港|CUSS|自助值机"];
             rrstatus=['4970','CUSS故障'];
         }else if(/内部通讯/.test(event.target.value)||/neit/.test(event.target.value)){
-            system=["86","ICOM|内部通讯"];
+            if($("#deviceareaname").val()==='浦东机场|T1'){
+            	system=['92','NBTX|内部通讯|T1']
+            }else{
+            	system=["86","ICOM|内部通讯"];
+        	}
         }else if(/航显/.test(event.target.value)||/hangx/.test(event.target.value)){
             if(/T1/.test($('#deviceareaname').val())){
                 system=["99","FIDS|航班信息显示|T1"];
@@ -568,8 +572,8 @@ var suetel=()=>{
 					    	}else{
 					    		opener.parent.start()
 					    	}
-					    	ws.send('rel()')
 					    	$("#rrscontent").unmask();
+					    	ws.send('rel()')
 					    }else{
 					    	alert("恭喜你服务器大姨妈了 没提交上去 再来一遍吧");
 					    	window.close();

@@ -1,4 +1,5 @@
 `var lock=false
+console.log(111)
 function ws_fun(){
 	window.ws=new WebSocket('wss://speech.zmj2.com/wss');
 	window.ws.onmessage=(msg)=>{
